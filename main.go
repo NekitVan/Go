@@ -5,19 +5,31 @@ import (
 	"fmt"
 )
 
+type MenuItem struct {
+	Name  string  `json:"name"`
+	Date  string  `json:"date"`
+	Price float64 `json:"price"`
+}
+
 type Info struct {
-	TTT []struct {
-		Name  string `json:"name"`
-		Date  string `json:"date"`
-		Price int    `json:"price"`
-	} `json:"ttt"`
+	TTT []MenuItem `json:"ttt"`
 }
 
-type Name struct {
-	Name string
-}
+func findItemByDate(date string, infos Info) {
+	faund := false
+	for _, item := range infos.TTT {
+		if item.Date == date {
+			fmt.Printf("Найден блюдо '%s' с ценой %.2f рублей.", item.Name, item.Price)
+			faund = true
+			break
+		}
+	}
+	if !faund {
+		fmt.Println("Нет тавара в наличии!")
+	}
 
-func rol() {
+}
+func rol() Info {
 	text := `{"ttt" : [{"name" :  "Бутер", "date" :"10.06.2024" , "price" : 1200} ,{"name" :  "Солянка", "date" : "13.06.2024" , "price" : 500}, {"name" :  "Пюре", "date" : "09.06.2024" , "price" : 1000}]}`
 	var infos Info
 	json.Unmarshal([]byte(text), &infos)
@@ -26,8 +38,10 @@ func rol() {
 	for i := range infos.TTT {
 		fmt.Println(i, infos.TTT[i].Name, infos.TTT[i].Date, infos.TTT[i].Price)
 	}
+	return infos
 }
 
 func main() {
-	rol()
+	infos := rol()
+	findItemByDate("10.06.2024", infos)
 }
